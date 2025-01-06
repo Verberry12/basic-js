@@ -17,30 +17,41 @@ const { NotImplementedError } = require('../extensions/index.js');
  */
 function repeater(str, options) {
   let data = {};
-  let repeatedString ='';
+  let repeatedString = '';
 
   if (options) {
-      if (typeof options === 'string') {
+    if (typeof options === 'string') {
+      try {
         data = JSON.parse(options);
-      } else {
-          data = options;
+      } catch (err) {
+        data = {};
       }
+    } else {
+      data = options;
+    }
   }
 
-  const repeatTimes = data.repeatTimes;
+  const repeatTimes = data.repeatTimes === undefined ? 1 : data.repeatTimes;
   let separator = data.separator;
   let addition = data.addition;
-  const additionRepeatTimes = data.additionRepeatTimes;
+  const additionRepeatTimes = data.additionRepeatTimes === undefined ? 1 : data.additionRepeatTimes;
   let additionSeparator = data.additionSeparator;
 
-  if (typeof str !== 'string'){
-      str = String(str);
+  if (str == null) {
+    str = 'undefined';
+  }
+   if (addition == null){
+    addition = '';
   }
   
-   if (typeof addition !== 'string'){
-      addition = String(addition);
+  if (typeof str !== 'string'){
+    str = String(str);
   }
-
+  
+  if (typeof addition !== 'string'){
+    addition = String(addition);
+  }
+ 
   if (separator === undefined) {
     separator = '+';
   }
@@ -48,13 +59,13 @@ function repeater(str, options) {
   if (additionSeparator === undefined) {
     additionSeparator = '|';
   }
-   
+
   let oneFullAdditionStr = '';
   
   if (addition) {
-      oneFullAdditionStr = (addition + additionSeparator).repeat(additionRepeatTimes);
-      let excessAdSep = additionSeparator.length;
-      oneFullAdditionStr = oneFullAdditionStr.slice(0, -excessAdSep);
+    oneFullAdditionStr = (addition + additionSeparator).repeat(additionRepeatTimes);
+    let excessAdSep = additionSeparator.length;
+    oneFullAdditionStr = oneFullAdditionStr.slice(0, -excessAdSep);
   }
 
   repeatedString = (str + oneFullAdditionStr + separator).repeat(repeatTimes);
